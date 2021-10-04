@@ -1,0 +1,35 @@
+version: '3'
+services:
+  flask:
+    build: ./backend
+    container_name: backend-flask
+    env_file:
+      - backend/config/.env.dev
+    restart: on-failure
+    volumes:
+      - ./backend:/backend
+    ports:
+      - "5000:5000"
+    command: gunicorn main:"test_app()" -b 0.0.0.0:5000 --reload
+    depends_on:
+      - db
+  nginx:
+    build:
+      context: ./backend/nginx
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+      - "433:433"
+    depends_on:
+      - flask
+  db:
+    image: postgres:13-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=hello_flask
+      - POSTGRES_PASSWORD=hello_flask
+      - POSTGRES_DB=hello_flask_dev
+
+volumes:
+  postgres_data:
