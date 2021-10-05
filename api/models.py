@@ -10,8 +10,8 @@ class User(db.Model):
     password = db.Column(db.String(50), nullable=False)
     project_name = db.Column(db.String(50), nullable=False)
 
-    def __init__(self, name, password, project_name):
-        self.name = name
-        self.password = password
-        self.project_name = project_name
+    def __init__(self, *args, **kwargs):
+        super(User, self).__init__(*args, **kwargs)
 
+    def __repr__(self):
+        return f'<User id: {self.id} User name {self.name}>'
